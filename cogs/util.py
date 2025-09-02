@@ -74,8 +74,10 @@ class Util(cmds.Cog):
         role_map = {}
         role_identifiers = []
 
-        if '"' not in role_name:
-            role_name = '"' + role_name + '"'
+        QUOTE_CHARS = {'"', '“', '”'}
+
+        if not any(quote in role_name for quote in QUOTE_CHARS):
+            role_name = f'"{role_name}"'
 
         role_data = ""
         within_quotes = False
@@ -89,7 +91,7 @@ class Util(cmds.Cog):
         role_counter = 0
         for char in role_name:
             if within_quotes:
-                if char == '"':
+                if char in QUOTE_CHARS:
                     role_id = "role{:04x}".format(role_counter)
                     role_data += role_id
                     role_counter += 1
@@ -102,7 +104,7 @@ class Util(cmds.Cog):
                 else:
                     role_accumulator += char
             else:
-                if char == '"':
+                if char in QUOTE_CHARS:
                     within_quotes = True
                     role_accumulator = ""
                 else:
